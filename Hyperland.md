@@ -8,14 +8,14 @@ tags:
 ---
 # Docs and Sources
 
-| DOCs                                                                              | Porpose                                                                         |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| https://wiki.hypr.land/Getting-Started/Master-Tutorial/                           | First-run guide: launch method, default keybinds, terminal, Wayland app forcing |
-| https://wiki.hypr.land/Nvidia/                                                    | NVIDIA setup: modeset kernel module, env vars, multi-GPU workarounds            |
-| https://wiki.hypr.land/Getting-Started/Master-Tutorial/#force-apps-to-use-wayland | Optional per-app: make Chromium/Electron use native Wayland not XWayland        |
-| https://wiki.hypr.land/Getting-Started/Installation/                              | Install methods per distro (Kali = `sudo apt install hyprland`)                 |
-| https://github.com/hyprwm/Hyprland/blob/main/example/hyprland.lua                 | Upstream default config we base our `hyprland.lua` on                           |
-| https://wiki.hypr.land/Configuring/Start/                                         | Config reference and recommended settings overview                              |
+| DOCs                                                                     | Porpose                                                                          |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| wiki.hypr.land/Getting-Started/Installation/                             | `Installation` – install methods per distro (Kali = `sudo apt install hyprland`) |
+| github.com/hyprwm/Hyprland/blob/main/<br>example/hyprland.lua            | `Config` – upstream default config our `hyprland.lua` is based on                |
+| wiki.hypr.land/Configuring/Start/                                        | `Config` – config reference and recommended settings overview                    |
+| wiki.hypr.land/Getting-Started/Master-Tutorial/                          | `Config` – launch method, default keybinds, terminal, Wayland app forcing        |
+| wiki.hypr.land/Nvidia/                                                   | `Kernel modesetting` + `Suspend / hibernate support` + `Config` (env vars)       |
+| hypr.land/Getting-Started/<br>Master-Tutorial/#force-apps-to-use-wayland |                                                                                  |
 
 # Installation
 
@@ -63,7 +63,7 @@ Proprietary Nvidia driver (kernel module + userland), CUDA toolchain for GPU com
 
 ### Kernel modesetting
 
-Added `options nvidia-current-drm modeset=1` and `options nvidia-current-drm modeset=1` to `/etc/modprobe.d/nvidia.conf`
+Added `options nvidia-current-drm modeset=1` and `options nvidia-current NVreg_PreserveVideoMemoryAllocations=1` to `/etc/modprobe.d/nvidia.conf`
 
 ```text
 "options nvidia-current-drm modeset=1" Enables NVIDIA kernel modesetting (KMS) so Hyprland can draw via KMS. and "options nvidia-current NVreg_PreserveVideoMemoryAllocations=1"  Keeps GPU VRAM contents across suspend/reboot, required by the services below.
