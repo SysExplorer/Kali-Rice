@@ -50,8 +50,8 @@ system.
 ELECTRON_OZONE_PLATFORM_HINT=auto fixes flickering in Electron/CEF apps.
 ```
 
- Then Installed `kitty` Terminal is the default terminal referenced by the config keybinds.
- `sudo apt install kitty`
+ Then Installed `kitty` Terminal is the default terminal referenced by the config keybinds and hyprland-guiutils.
+ `sudo apt install kitty hyprland-guiutils -y`
 
 # NVIDIA driver
 
