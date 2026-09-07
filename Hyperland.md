@@ -99,3 +99,11 @@ with the NVreg_PreserveVideoMemoryAllocations option above.
 - After reboot verify modeset persisted:
   - `ls /dev/dri/` -> should list `renderD128` (AMD) and `renderD129` (NVIDIA)
   - `cat /sys/module/nvidia_drm/parameters/modeset` -> should print `Y`
+
+ Verify options took effect — run and check expectations:
+- ls /dev/dri/ → renderD128 (AMD) + renderD129 (NVIDIA)
+- cat /sys/module/nvidia_drm/parameters/modeset → Y
+- cat /proc/driver/nvidia/params | grep PreserveVideoMemoryAllocations → 1
+2. Test Hyprland from a TTY (safer than fighting SDDM): Ctrl+Alt+F3, log in, type Hyprland. Errors print there immediately.
+3. Return to KDE with Ctrl+Alt+F1/F2.
+4. Only if black screen / GBM errors appear → I add env = GBM_BACKEND,nvidia-drm to ~/.config/hypr/hyprland.lua (known NVIDIA rough edge).

@@ -132,7 +132,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Hyperland.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -151,7 +150,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Hyperland.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -194,7 +192,6 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Hyperland.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -221,9 +218,9 @@
       "bases:Create new base": false
     }
   },
-  "active": "dbd2fe533ed7b7e6",
+  "active": "f984af9d08c5b5bd",
   "lastOpenFiles": [
-    "Plan.md",
-    "Hyperland.md"
+    "Hyperland.md",
+    "Plan.md"
   ]
 }
