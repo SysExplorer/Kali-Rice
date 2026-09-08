@@ -35,8 +35,9 @@ systemctl --global is-enabled waybar.service
 -- Or execute your favorite apps at launch like this:
 --
    hl.on("hyprland.start", function ()
-     hl.exec_cmd("systemctl --user start waybar.service")
-     hl.exec_cmd(kitty)
+     hl.exec_once("systemctl --user start waybar.service")
+--   hl.exec_once("waybar")
+     hl.exec_cmd("kitty")
 --   hl.exec_cmd("nm-applet")
 --   hl.exec_cmd("waybar & hyprpaper & firefox")
    end)
