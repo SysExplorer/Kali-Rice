@@ -16,6 +16,7 @@ tags:
 | wiki.hypr.land/Getting-Started/Master-Tutorial/                          | `Config` – launch method, default keybinds, terminal, Wayland app forcing        |
 | wiki.hypr.land/Nvidia/                                                   | `Kernel modesetting` + `Suspend / hibernate support` + `Config` (env vars)       |
 | hypr.land/Getting-Started/<br>Master-Tutorial/#force-apps-to-use-wayland |                                                                                  |
+| start-hyprland -- -h                                                     |                                                                                  |
 
 # Installation
 
@@ -28,18 +29,22 @@ and the XDG desktop portal for screen-sharing / file-picker support.
 
 ### Config
 
-Create a config file in  `~/.config/hypr/hyprland.lua`  using the example template shipped in `/usr/share/hypr/hyprland.lua` 
+Create a config file in  `~/.config/hypr/hyprland.lua` and copy the example  template shipped in `/usr/share/hypr/hyprland.lua` to it.
 
 ```text
 The example already provides monitors, programs, autostart, look-and-feel input,
 keybinds and window rules, so nothing is needed from scratch.
 ```
 
-Added to its `ENVIRONMENT VARIABLES` section:
+Added to its `ENVIRONMENT VARIABLES` section Befor the `Permissions` Section:
 
 ```lua
-hl.env("LIBVA_DRIVER_NAME", "nvidia")
-hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+-- NVIDIA: force apps to use NVIDIA's video-decode driver and GLX/OpenGL library  
+-- (avoids conflicts on systems that also have Mesa installed)  
+hl.env("LIBVA_DRIVER_NAME", "nvidia")  
+hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")  
+  
+-- Fix flickering in Electron / CEF apps (see https://wiki.hypr.land/Nvidia/)  
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 ```
 
@@ -50,8 +55,28 @@ system.
 ELECTRON_OZONE_PLATFORM_HINT=auto fixes flickering in Electron/CEF apps.
 ```
 
- Then Installed `kitty` Terminal is the default terminal referenced by the config keybinds and hyprland-guiutils.
- `sudo apt install kitty hyprland-guiutils -y`
+ Then Installed `kitty` Terminal as it is the default terminal referenced by the config keybinds and hyprland-guiutils: `sudo apt install kitty hyprland-guiutils -y`
+
+To keep all our config files organized, create a dedicated ricing folder:
+
+```bash
+mkdir -p ~/.config/ricing/hypr/
+```
+
+Move the Hyprland config into the new folder:
+
+```bash
+mv ~/.config/hypr/hyprland.lua ~/.config/ricing/hypr/hyprland.lua
+```
+
+Now tell Hyprland to use the new config when starting the session. Edit `/usr/share/wayland-sessions/hyprland.desktop` and change its `Exec=` line to:
+
+```ini
+Exec=/usr/bin/start-hyprland -- --config /home/<username>/.config/ricing/hypr/hyprland.lua
+```
+
+Replace `<username>` with your Linux username.
+
 
 # NVIDIA driver
 
@@ -87,7 +112,6 @@ nvidia-resume.service
 Handle GPU state (freeze/thaw VRAM) around suspend/hibernate/resume. They work
 with the NVreg_PreserveVideoMemoryAllocations option above.
 ```
-
 
 
 # Next Steps
