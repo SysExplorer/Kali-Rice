@@ -1,0 +1,535 @@
+
+![[Rice-Goal-Output-Video.mp4]]
+## Brief
+
+My goal for this ricing project is to build a complete, fully-functioning Hyprland rice on Kali that matches my taste and vibe, while keeping a complete, fully-functioning KDE Plasma session as a safe fallback. The two must stay fully isolated: no Kali specific config change, or daemon changed for the rice or may delete, overwrite, break or interfere with Kali's default apps, tools, or configs. nothing should break on a system update, and switching back to stock KDE should always feel untouched.
+
+> UI should control system functionality through default stable system cli tools and core functionalty rather than implementing the functionality itself so nothing Breaks upon Updates.
+
+**Separation model:** Riced and Normal Desktop sessions are separated through session-scoped autostart, never global autostart. Every daemon, symlink swap, or config the rice depends on (Waybar, SwayNC, swww, cliphist, hypridle, hyprlock, etc.) starts via Hyprland's own `exec-once` inside `~/.config/hyprland.lua`, never as a globally-enabled systemd user service, and never via an autostart entry that fires regardless of session.
+
+**Per-app config strategy:** Every app or tool specific to the rice is disabled by default and gets up to 3 separate config files:  a `-default` (Kali/KDE baseline) for the 1st time as it will be swaped with either the rice or the Normal Specific Session Config, and a `-rice` (Hyprland-specific). At session start:
+
+- **Hyprland session:** `exec-once` in the Hyprlan Config file `~/.config/hyprland.lua` runs `cp ~/.config/<app>/<app>-rice.conf ~/.config/<app>/<app>.conf` for any shared app, fully replacing the live config with the rice version. Never write directly to the live `<app>.conf` — always edit the `-rice` or `-default` source file, since the live file gets overwritten every session start.
+- **KDE/Plasma session:** a script in `~/.config/plasma-workspace/env/` (sourced by Plasma before the desktop session starts) runs the mirror command, `cp ~/.config/<app>/<app>-default.conf ~/.config/<app>/<app>.conf`, restoring the baseline.
+- If a component ships as a systemd unit, it stays `disabled` at the systemd level and is started/stopped manually with `exec-once` from hyprland config file `~/.config/hyprland.lua` (e.g. `systemctl --user start waybar.service`), so it only ever runs inside the Hyprland session.
+
+
+The result: two sessions that never leak into each other, even for apps they both use — nothing riced is running, symlinked, or copied over while working in stock KDE, and vice versa.
+
+These are the plan and, at the end, what I'll end up using going forward: 
+%%will get updated after the ricing is full and mature — for now, plan/reference purposes only)_ and remember to add an indecator on top of shared config so that it will not be edited my mistake.%%
+ 
+
+My goal for this ricing project is to build a complete, fully-functioning Hyprland rice on Kali that matches my taste and vibe, while keeping a complete, fully-functioning KDE Plasma session as a safe fallback. The two must stay fully isolated: no Kali-specific config change or daemon change made for the rice may delete, overwrite, break, or interfere with Kali's default apps, tools, or configs. Nothing should break on a system update, and switching back to stock KDE should always feel untouched.
+
+> UI should control system functionality through default, stable system CLI tools and core functionality rather than implementing the functionality itself, so nothing breaks upon updates.
+
+**Separation model:** Riced and Normal Desktop sessions are separated through session-scoped autostart, never global autostart. Every daemon, symlink swap, or config the rice depends on (Waybar, SwayNC, swww, cliphist, hypridle, hyprlock, etc.) starts via Hyprland's own `exec-once` inside `~/.config/hyprland.lua`, never as a globally-enabled systemd user service, and never via an autostart entry that fires regardless of session.
+
+**Per-app config strategy:** Every app or tool specific to the rice is disabled by default and gets up to 3 separate config files: a `-default` (Kali/KDE baseline, used the first time before it gets swapped with either the rice or normal-session config), and a `-rice` (Hyprland-specific). At session start:
+
+- **Hyprland session:** `exec-once` in the Hyprland config file `~/.config/hyprland.lua` runs `cp ~/.config/<app>/<app>-rice.conf ~/.config/<app>/<app>.conf` for any shared app, fully replacing the live config with the rice version.
+- **KDE/Plasma session:** a script in `~/.config/plasma-workspace/env/` (sourced by Plasma before the desktop session starts) runs the mirror command, `cp ~/.config/<app>/<app>-default.conf ~/.config/<app>/<app>.conf`, restoring the baseline.
+- If a component ships as a systemd unit, it stays `disabled` at the systemd level and is started/stopped manually with `exec-once` from `~/.config/hyprland.lua` (e.g. `systemctl --user start waybar.service`), so it only ever runs inside the Hyprland session.
+- **Never edit the live `<app>.conf` directly** — always edit the `-rice` or `-default` source file, since the live file gets overwritten every session start and any direct edit will be silently lost. Every shared, session-swapped config file must start with a clear warning comment at the top, e.g.:
+    
+    ```
+    # ⚠ AUTO-GENERATED — DO NOT EDIT THIS FILE DIRECTLY# This file is overwritten every session start.# Edit the source instead: <app>-rice.conf or <app>-default.conf
+    ```
+    
+
+The result: two sessions that never leak into each other, even for apps they both use — nothing riced is running, symlinked, or copied over while working in stock KDE, and vice versa.
+
+These are the plan and, at the end, what I'll end up using going forward: _(will get updated after the ricing is full and mature — for now, plan/reference purposes only)_
+
+
+
+
+
+
+
+
+
+
+
+
+
+## [[Machine]]
+
+- OS: Kali GNU/Linux Rolling x86_64  
+- DE: KDE Plasma 6.7.4  
+- WM: KWin (Wayland) 
+- CPU: AMD Ryzen 5 8645HS (12) @ 5.02 GHz  
+- GPU 1: NVIDIA GeForce RTX 2050 [Discrete]  
+- GPU 2: AMD Radeon 760M Graphics [Integrated]  
+- Memory: 3.90 GiB / 14.86 GiB (26%) 
+
+## [[Window Management]]
+
+- Tiling
+- Scroll layout
+- Master layout
+- Floating windows
+- Normal / windowed mode (floating with borders)
+- Window borders
+- Window background effects
+- Workspace management
+- Workspace indicators
+- Workspace naming
+- Workspace rules
+- Special workspaces
+- "Quick Shell": alternative shell to evaluate later
+
+## [[Application Launching]]
+
+- Application menu / launcher: Rofi (rofi-wayland)
+- Application search
+- Active applications / window switcher
+- Tab / window switching
+- Quick file opener
+- Command search
+- Bookmark search
+- Shortcut cheat sheet panel
+- Theme changer (via Rofi)
+
+> Rofi (rofi-wayland) is the single interface surfacing several features that also appear under their own categories below: clipboard (via cliphist), calculator, theme changer, wallpaper picker, Wi-Fi picker, Bluetooth picker, power profiles, and power controls (poweroff, sleep, etc.).
+
+## [[System Controls]]
+
+#### [[Wi-Fi]]
+
+- Enable / disable Wi-Fi
+- List available networks
+- Connect / disconnect
+- Show current connection
+- Network status
+- Wi-Fi selection
+- Wi-Fi picker via Rofi
+
+#### [[Network]]
+
+- Ethernet
+- VPN
+- Connection management
+- Connection status
+
+#### [[Bluetooth]]
+
+- Enable / disable Bluetooth
+- Device discovery
+- Pairing
+- Connect / disconnect
+- Device battery status
+- Bluetooth picker via Rofi
+
+#### [[Audio]]
+
+- Volume control
+- Mute / unmute
+- Output device switching
+- Input device switching
+- Per-application volume
+- Microphone mute
+
+#### [[Brightness]]
+
+- Brightness control
+- Increase / decrease brightness
+- Set brightness level
+- Per-monitor brightness where supported
+
+#### [[Power]]
+
+- Battery status
+- Charging status
+- Power profiles (selectable via Rofi)
+- Sleep
+- Suspend
+- Hibernate
+- Shutdown
+- Reboot
+- Lid behavior
+- Lock screen
+- Poweroff / sleep menu via Rofi
+
+## [[Notifications & Media]]
+
+#### [[Notifications]]
+
+- Display notifications
+- Notification history
+- Notification grouping
+- Do-not-disturb mode
+- Clear notifications
+- Notification actions
+- Notification center / control center
+- Waybar integration
+- Dynamic wallpaper-based theming
+
+#### [[Media]]
+
+- Play / pause
+- Previous / next
+- Current track
+- Artist
+- Album artwork
+- Playback status
+- Listening status
+- Waybar integration
+- Media controls on the lock screen
+
+## [[System Information]]
+
+- CPU usage
+- RAM usage
+- GPU usage
+- Storage usage
+- Network usage
+- Temperature
+- Battery
+- Time
+- Date
+- Clock
+- Fastfetch (custom ASCII art)
+- btop (system monitor)
+
+## [[Wallpaper & Appearance]]
+
+#### [[Wallpaper]]
+
+- Browse wallpapers
+- Wallpaper selection
+- Instant wallpaper switching
+- Wallpaper transitions
+- Multi-monitor support
+- Rofi integration (wallpaper picker)
+- Wallpaper-based color generation
+- Wallpaper daemon handles display and transitions behind Rofi's picker
+
+#### [[Dynamic Theming]]
+
+- Extract colors from the current wallpaper
+- Generate a consistent color palette
+- Apply colors to the desktop
+- Apply colors to the status bar (Waybar)
+- Apply colors to the launcher (Rofi)
+- Apply colors to notifications
+- Apply colors to the terminal
+- Apply colors to GTK
+- Apply colors to Qt
+- Apply colors to the lock screen
+- Apply colors to the greeter
+- Reload affected applications automatically
+- Keep a shared color source while allowing separate configurations
+
+#### [[Color Themes]]
+
+- Terminal
+- Opencode
+- VS Code
+
+#### [[GTK / Qt Appearance]]
+
+- I will Probablly Custom Create Mine including the Floating Windo Controls
+- GTK application styling
+- Qt application styling
+- Dark / light mode
+- Dynamic wallpaper-based colors
+- Consistent appearance across applications
+
+#### [[Icons]]
+
+- Application icons
+- File icons
+- System icons
+- Consistent icon set
+- Theme integration
+- Decide whether icons themselves should dynamically change
+- Selected icon theme: Papirus + papirus-folders (custom icon set planned for later)
+
+#### [[Cursor]]
+
+- Cursor style
+- Cursor size
+- Theme integration
+
+#### [[Fonts]]
+
+- UI font
+- Terminal font
+- Waybar font
+- Nerd Font
+- Icon font
+
+## [[Authentication & Session]]
+
+#### [[Lock Screen]]
+
+- Lock / unlock
+- Password authentication
+- Dynamic wallpaper
+- Dynamic colors
+- Clock
+- Media controls
+- Power controls
+- Separate configuration from the greeter
+- Option to use a different theme from the desktop
+
+#### [[Login / Greeter]]
+
+- Login screen
+- User selection
+- Session selection
+- Shutdown / reboot
+- Dynamic wallpaper
+- Dynamic colors
+- Separate configuration from the lock screen
+- Option to use a different theme from the desktop
+
+#### [[Privileged Actions]]
+
+- Graphical authentication dialogs
+- Authentication for privileged actions from graphical applications
+
+## [[Clipboard & File Management]]
+
+#### [[Clipboard]]
+
+- Clipboard history
+- Text history
+- Image history
+- Search
+- Rofi integration (via cliphist)
+
+#### [[File Management]]
+
+- File browsing
+- Open files
+- Copy / move
+- Delete
+- Trash
+- Mount / unmount drives
+- Thumbnails
+- Archive handling
+- Theme and icon integration
+- Other Pro features related to Conneting to remote Drives and more
+
+## [[Screenshots & Recording]]
+
+#### [[Screenshots]]
+
+- Full screen
+- Window
+- Region
+- Copy to clipboard
+- Save to file
+- Optional annotation
+
+#### [[Screen Recording]]
+
+- Full screen
+- Window
+- Region
+- System audio
+- Microphone
+- Recording indicator
+
+## [[Display & Session Management]]
+
+#### [[Idle Management]]
+
+- Detect inactivity
+- Automatic screen locking
+- Display sleep
+- Suspend
+- Idle inhibition while watching media
+
+#### [[Display Management]]
+
+- Resolution
+- Refresh rate
+- Scaling
+- Monitor positioning
+- Multi-monitor configuration
+- Display profiles
+
+#### [[Night Light]]
+
+- Blue-light reduction
+- Automatic schedule
+- Manual color temperature
+
+#### [[System Tray]]
+
+- Tray applications
+- Network / VPN applications
+- Background applications
+
+## [[Desktop Utilities]]
+
+
+#### [[Notes and Code]]
+
+- Neovim for terminals and light edits (will use fzf with it)
+- VsCode for Real Job
+- Obsidian as Main Notes App
+
+
+#### [[OSD]]
+
+- Volume
+- Brightness
+- Microphone mute
+- Media controls
+- Other system feedback
+- Wallpaper-based theme
+
+#### [[Desktop Widgets]]
+
+- CPU usage
+- RAM usage
+- GPU usage
+- Network
+- Weather
+- Clock
+- Other system information
+
+#### [[Calculator]]
+
+- Quick calculations
+- Unit conversion
+- Rofi integration
+
+#### [[Color Picker]]
+
+- Pick a color from the screen (grab HEX from screen)
+- HEX / RGB output
+- Copy to clipboard
+- Rofi integration
+
+#### [[Quick Actions]]
+
+- Wi-Fi
+- Bluetooth
+- Brightness
+- Volume
+- Do-not-disturb
+- Power profile
+- Dark / light mode
+- Other frequently used system controls
+
+#### [[Search]]
+
+- Applications
+- Files
+- Windows / Tabs
+- Bookmarks
+- Commands
+
+## [[Terminal & Shell]]
+
+#### [[Terminal]]
+
+- Kitty (If i cant find a better one)
+- Terminal customization
+- Transparency
+- Visual effects
+- Dynamic wallpaper-based theme
+- Fastfetch on shell start, with custom ASCII art
+- btop for in-terminal system stats
+- Neovim, used instead of Kate as the text editor
+
+#### [[Work Terminal]]
+
+- Wave
+- Development / work environment
+- May be dropped later
+
+#### [[Shell]]
+
+- Zsh
+- Command completion
+- Syntax highlighting
+- Prompt customization
+
+## [[Wayland & Desktop Integration]]
+
+#### [[Wayland / Desktop Integration]]
+
+- Screen sharing
+- Screenshot integration
+- File chooser
+- Browser integration
+- Flatpak integration
+- Graphical authentication
+- Desktop application integration
+
+# [[Features Yet to Be Decided]]
+
+- Exact notification daemon
+- Exact wallpaper manager
+- Exact dynamic theme engine
+- Exact GTK theme
+- Exact Qt theme
+- Exact icon theme (leaning toward Papirus + papirus-folders, with custom icons planned later)
+- Exact cursor theme
+- Exact font(s)
+- Exact lock screen
+- Exact greeter
+- Exact idle manager
+- Exact clipboard backend
+- Exact file manager
+- Exact screenshot tool
+- Exact screen recorder
+- Exact OSD solution
+- Exact audio control UI
+- Exact network UI
+- Exact Bluetooth UI
+- Exact power-management UI
+- Exact display-management tool
+- Exact XDG portal implementation
+- Exact Polkit agent
+- Exact system tray solution
+- Exact media-control implementation
+- Desktop widgets
+- Night-light implementation
+- Workspace configuration
+- Calculator
+- Color picker
+- Quick-actions interface
+- Search extensions / providers
+- System fonts and per-app fonts
+- Whether "Quick Shell" replaces or supplements Hyprland's current shell setup
+
+# [[Apps / Software to Consider]]
+
+|Software / Apps|Function|
+|---|---|
+|Hyprland|Compositor / Window Manager|
+|Waybar|Status Bar|
+|Rofi (rofi-wayland)|Launcher / Menus|
+|Kitty|Terminal|
+|Wave|Work Terminal|
+|Zsh|Shell|
+|SwayNC|Notification Daemon|
+|swww / awww, Hyprpaper|Wallpaper Manager|
+|Matugen|Dynamic Theme Engine|
+|Hyprlock|Lock Screen|
+|Hypridle|Idle Management|
+|Cliphist, wl-clipboard|Clipboard|
+|Thunar, Dolphin, Nemo|File Manager|
+|Grim, Slurp|Screenshot|
+|OBS Studio, wl-screenrec|Screen Recording|
+|PipeWire, WirePlumber, pavucontrol|Audio|
+|NetworkManager, nmcli|Network|
+|BlueZ, bluetoothctl|Bluetooth|
+|Polkit, Polkit authentication agent|Authentication|
+|SDDM, greetd|Login / Greeter|
+|xdg-desktop-portal, xdg-desktop-portal-hyprland|Wayland Portal|
+|Papirus + papirus-folders|Icon Theme|
+|Fastfetch|System Info Fetch|
+|btop|System Monitor|
+|Neovim|Text Editor|
+|VS Code|Code Editor (theme target)|
+|Opencode|Coding Tool (theme target)|

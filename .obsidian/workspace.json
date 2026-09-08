@@ -6,7 +6,6 @@
       {
         "id": "983cfc6617d4f008",
         "type": "tabs",
-        "dimension": 55.45685279187818,
         "children": [
           {
             "id": "c1583e30aa8354e8",
@@ -14,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Plan.md",
+                "file": "Waybar.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Plan"
+              "title": "Waybar"
             }
           },
           {
@@ -34,24 +33,6 @@
               },
               "icon": "lucide-file",
               "title": "Hyperland"
-            }
-          }
-        ],
-        "currentTab": 1
-      },
-      {
-        "id": "47cf461457777787",
-        "type": "tabs",
-        "dimension": 44.54314720812182,
-        "children": [
-          {
-            "id": "f984af9d08c5b5bd",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
             }
           }
         ]
@@ -116,7 +97,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 298.28515625
   },
   "right": {
     "id": "b81e423651bf26e5",
@@ -132,6 +113,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Waybar.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -200,7 +182,8 @@
               "title": "Outline"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -218,9 +201,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "f984af9d08c5b5bd",
+  "active": "c1583e30aa8354e8",
   "lastOpenFiles": [
     "Hyperland.md",
-    "Plan.md"
+    "Waybar.md",
+    "Linux Ricing Plan.md"
   ]
 }

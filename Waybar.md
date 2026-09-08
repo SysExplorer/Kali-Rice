@@ -1,0 +1,163 @@
+---
+Description:
+UseCase:
+Configfile:
+  - ~/.config/hypr/hyprland.lua
+tags:
+  - Ricing
+---
+
+# Draft
+
+/home/neo/.config/plasma-workspace/env/Revert-Riced-Session-Configs.sh
+
+
+```
+
+sudo apt install waybar -y
+
+sudo systemctl --global disable waybar         
+                                                                                 systemctl --user disable waybar.service      
+                                                                                         
+systemctl --user is-enabled waybar.service  
+ 
+systemctl --global is-enabled waybar.service  
+
+
+
+-------------------
+---- AUTOSTART ----
+-------------------
+
+-- See https://wiki.hypr.land/Configuring/Basics/Autostart/
+
+-- Autostart necessary processes (like notifications daemons, status bars, etc.)
+-- Or execute your favorite apps at launch like this:
+--
+   hl.on("hyprland.start", function ()
+     hl.exec_cmd("systemctl --user start waybar.service")
+     hl.exec_cmd(kitty)
+--   hl.exec_cmd("nm-applet")
+--   hl.exec_cmd("waybar & hyprpaper & firefox")
+   end)
+
+
+------------------------------
+---- Start Rice Programs -----
+------------------------------
+
+-- hl.exec_once("systemctl --user disable waybar.service")
+
+  
+  
+  
+-------------------------------  
+---- ENVIRONMENT VARIABLES ----  
+-------------------------------
+
+
+
+```
+
+
+
+# Docs and Sources
+
+| DOCs                                                         | Porpose |
+| ------------------------------------------------------------ | ------- |
+| wiki.hypr.land/Configuring/Basics/Autostart/                 |         |
+| wiki.hypr.land/Useful-Utilities/Systemd-start<br>/#autostart |         |
+| https://github.com/Alexays/Waybar                            |         |
+|                                                              |         |
+|                                                              |         |
+| <br>                                                         |         |
+
+# Installation
+
+Installed with `sudo apt install waybar`
+
+```text
+
+```
+
+### Config
+
+Create a config file in  `~/.config/hypr/hyprland.lua`  using the example template shipped in `/usr/share/hypr/hyprland.lua` 
+
+```text
+The example already provides monitors, programs, autostart, look-and-feel input,
+keybinds and window rules, so nothing is needed from scratch.
+```
+
+Added to its `ENVIRONMENT VARIABLES` section:
+
+```lua
+hl.env("LIBVA_DRIVER_NAME", "nvidia")
+hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+```
+
+```text
+LIBVA_DRIVER_NAME and __GLX_VENDOR_LIBRARY_NAME tell apps to use NVIDIA's
+video-decode and OpenGL/GLX libraries, avoiding conflicts with the Mesa on the
+system.
+ELECTRON_OZONE_PLATFORM_HINT=auto fixes flickering in Electron/CEF apps.
+```
+
+ Then Installed `kitty` Terminal is the default terminal referenced by the config keybinds and hyprland-guiutils.
+ `sudo apt install kitty hyprland-guiutils -y`
+
+# NVIDIA driver
+
+Installed with `sudo apt install -y nvidia-driver nvidia-cuda-toolkit nvidia-smi`
+
+```text
+Proprietary Nvidia driver (kernel module + userland), CUDA toolchain for GPU compute and nvidia-smi to query/monitor the GPU.
+```
+
+### Kernel modesetting
+
+Added `options nvidia-current-drm modeset=1` and `options nvidia-current NVreg_PreserveVideoMemoryAllocations=1` to `/etc/modprobe.d/nvidia.conf`
+
+```text
+"options nvidia-current-drm modeset=1" Enables NVIDIA kernel modesetting (KMS) so Hyprland can draw via KMS. and "options nvidia-current NVreg_PreserveVideoMemoryAllocations=1"  Keeps GPU VRAM contents across suspend/reboot, required by the services below.
+```
+
+Regenerated Kernel initramf with `sudo update-initramfs -u` so the options load
+in early boot.
+
+### Suspend / hibernate support
+
+Enabled these systemd services with `sudo systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service` :
+
+```text
+nvidia-suspend.service
+nvidia-hibernate.service
+nvidia-resume.service
+```
+
+
+```text
+Handle GPU state (freeze/thaw VRAM) around suspend/hibernate/resume. They work
+with the NVreg_PreserveVideoMemoryAllocations option above.
+```
+
+
+
+# Next Steps
+
+- Test Hyprland from a TTY: `Ctrl+Alt+F3`, log in, type `Hyprland`. Errors show
+  here immediately; return to KDE with `Ctrl+Alt+F1/F2`.
+- If black screen or GBM errors: add `env = GBM_BACKEND,nvidia-drm` to
+  `~/.config/hypr/hyprland.lua`.
+- After reboot verify modeset persisted:
+  - `ls /dev/dri/` -> should list `renderD128` (AMD) and `renderD129` (NVIDIA)
+  - `cat /sys/module/nvidia_drm/parameters/modeset` -> should print `Y`
+
+ Verify options took effect — run and check expectations:
+- ls /dev/dri/ → renderD128 (AMD) + renderD129 (NVIDIA)
+- cat /sys/module/nvidia_drm/parameters/modeset → Y
+- cat /proc/driver/nvidia/params | grep PreserveVideoMemoryAllocations → 1
+2. Test Hyprland from a TTY (safer than fighting SDDM): Ctrl+Alt+F3, log in, type Hyprland. Errors print there immediately.
+3. Return to KDE with Ctrl+Alt+F1/F2.
+4. Only if black screen / GBM errors appear → I add env = GBM_BACKEND,nvidia-drm to ~/.config/hypr/hyprland.lua (known NVIDIA rough edge).
