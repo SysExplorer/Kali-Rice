@@ -55,6 +55,9 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 
 
 
+
+
+
 ## [[Machine]]
 
 - OS: Kali GNU/Linux Rolling x86_64  

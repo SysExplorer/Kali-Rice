@@ -17,6 +17,7 @@ tags:
 | wiki.hypr.land/Nvidia/                                                   | `Kernel modesetting` + `Suspend / hibernate support` + `Config` (env vars)       |
 | hypr.land/Getting-Started/<br>Master-Tutorial/#force-apps-to-use-wayland |                                                                                  |
 | start-hyprland -- -h                                                     |                                                                                  |
+| wiki.hypr.land/configuring/extra/systemd/                                |                                                                                  |
 
 # Installation
 

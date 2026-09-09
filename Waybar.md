@@ -16,12 +16,33 @@ tags:
 
 sudo apt install waybar -y
 
-sudo systemctl --global disable waybar         
-                                                                                 systemctl --user disable waybar.service      
-                                                                                         
+sudo systemctl --global disable waybar
+                                            systemctl --user status waybar.service
+systemctl --user enable waybar.service
+systemctl --user start waybar.service
+systemctl --user disable waybar.service
+
 systemctl --user is-enabled waybar.service  
- 
 systemctl --global is-enabled waybar.service  
+
+
+   hl.on("hyprland.start", function ()
+--   hl.exec_cmd("systemctl --user start waybar.service")
+--   hl.exec_cmd("waybar")
+     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISP>
+     hl.exec_cmd("systemctl --user start hyprland-session.target")
+     hl.exec_cmd("systemctl --user start waybar.service")
+     hl.exec_cmd("kitty")
+   end)
+   
+   
+hl.on("hyprland.shutdown", function() hl.exec_cmd("systemctl --user stop hyprland-session.target") end)
+
+hyprctl reload
+
+https://claude.ai/chat/af504463-841d-46a8-9f4b-125dc2475fea
+
+I am back but i cant see the waybar. i think i will hsust edit the service file and remove the dependecy and also revert / delet the 3 commads we added to lus file or should i just be using waybar instead of waybar with systemctl?
 
 
 
@@ -36,7 +57,7 @@ systemctl --global is-enabled waybar.service
 --
    hl.on("hyprland.start", function ()
      hl.exec_cmd("systemctl --user start waybar.service")
---   hl.exec_once("waybar")
+--   hl.exec_cmd("waybar")
      hl.exec_cmd("kitty")
 --   hl.exec_cmd("nm-applet")
 --   hl.exec_cmd("waybar & hyprpaper & firefox")
@@ -56,7 +77,7 @@ systemctl --global is-enabled waybar.service
 ---- ENVIRONMENT VARIABLES ----  
 -------------------------------
 
-
+systemctl --user edit waybar.service
 
 
 ```

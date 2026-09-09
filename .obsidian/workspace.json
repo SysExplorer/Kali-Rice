@@ -49,8 +49,7 @@
               "title": "Waybar"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -216,10 +215,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "c1583e30aa8354e8",
+  "active": "6c467e346d17fe76",
   "lastOpenFiles": [
+    "Waybar.md",
     "Hyperland.md",
-    "Linux Ricing Plan.md",
-    "Waybar.md"
+    "Linux Ricing Plan.md"
   ]
 }
