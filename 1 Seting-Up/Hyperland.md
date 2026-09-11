@@ -2,9 +2,10 @@
 Description:
 UseCase:
 Configfile:
-  - ~/.config/hypr/hyprland.lua
+  - ~/.config/ricing/hypr/hyprland.lua
 tags:
   - Ricing
+  - Compositor
 ---
 # Docs and Sources
 

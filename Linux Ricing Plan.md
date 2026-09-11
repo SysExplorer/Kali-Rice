@@ -25,6 +25,40 @@ The result: two sessions that never leak into each other, even for apps they bot
 These are the plan and, at the end, what I'll end up using going forward: _(will get updated after the ricing is full and mature — for now, plan/reference purposes only)_
 
 
+
+
+## [[Apps / Software to Consider]]
+
+| Software / Apps                                 | Function                    |
+| ----------------------------------------------- | --------------------------- |
+| [[Hyperland]]                                   | Compositor / Window Manager |
+| [[Waybar]]                                      | Status Bar                  |
+| [[Wofi]]                                        | Launcher / Menus            |
+| Kitty                                           | Terminal                    |
+| Wave                                            | Work Terminal               |
+| Zsh                                             | Shell                       |
+| [[SwayNC]]                                      | Notification Daemon         |
+| swww / awww, Hyprpaper                          | Wallpaper Manager           |
+| Matugen                                         | Dynamic Theme Engine        |
+| Hyprlock                                        | Lock Screen                 |
+| Hypridle                                        | Idle Management             |
+| [[Cliphist]], wl-clipboard                      | Clipboard                   |
+| Thunar, Dolphin, Nemo                           | File Manager                |
+| Flameshot but may change to (Grim, Slurp)       | Screenshot                  |
+| OBS Studio, wl-screenrec                        | Screen Recording            |
+| PipeWire, WirePlumber, pavucontrol              | Audio                       |
+| NetworkManager, nmcli                           | Network                     |
+| BlueZ, bluetoothctl                             | Bluetooth                   |
+| Polkit, Polkit authentication agent             | Authentication              |
+| SDDM, greetd                                    | Login / Greeter             |
+| xdg-desktop-portal, xdg-desktop-portal-hyprland | Wayland Portal              |
+| Papirus + papirus-folders                       | Icon Theme                  |
+| Fastfetch                                       | System Info Fetch           |
+| btop                                            | System Monitor              |
+| Neovim                                          | Text Editor                 |
+| VS Code                                         | Code Editor (theme target)  |
+| Opencode                                        | Coding Tool (theme target)  |
+
 ## [[Machine]]
 
 - OS: Kali GNU/Linux Rolling x86_64  
@@ -51,14 +85,14 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Special workspaces
 - "Quick Shell": alternative shell to evaluate later
 
-## [[Application Launching]]
+## [[Launching]]
 
 - Application menu / launcher: Rofi (rofi-wayland)
 - Application search
 - Active applications / window switcher
 - Tab / window switching
 - Quick file opener
-- Command search
+- Layout change pr app
 - Bookmark search
 - Shortcut cheat sheet panel
 - Theme changer (via Rofi)
@@ -471,35 +505,3 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Search extensions / providers
 - System fonts and per-app fonts
 - Whether "Quick Shell" replaces or supplements Hyprland's current shell setup
-
-# [[Apps / Software to Consider]]
-
-|Software / Apps|Function|
-|---|---|
-|Hyprland|Compositor / Window Manager|
-|Waybar|Status Bar|
-|Rofi (rofi-wayland)|Launcher / Menus|
-|Kitty|Terminal|
-|Wave|Work Terminal|
-|Zsh|Shell|
-|SwayNC|Notification Daemon|
-|swww / awww, Hyprpaper|Wallpaper Manager|
-|Matugen|Dynamic Theme Engine|
-|Hyprlock|Lock Screen|
-|Hypridle|Idle Management|
-|Cliphist, wl-clipboard|Clipboard|
-|Thunar, Dolphin, Nemo|File Manager|
-|Grim, Slurp|Screenshot|
-|OBS Studio, wl-screenrec|Screen Recording|
-|PipeWire, WirePlumber, pavucontrol|Audio|
-|NetworkManager, nmcli|Network|
-|BlueZ, bluetoothctl|Bluetooth|
-|Polkit, Polkit authentication agent|Authentication|
-|SDDM, greetd|Login / Greeter|
-|xdg-desktop-portal, xdg-desktop-portal-hyprland|Wayland Portal|
-|Papirus + papirus-folders|Icon Theme|
-|Fastfetch|System Info Fetch|
-|btop|System Monitor|
-|Neovim|Text Editor|
-|VS Code|Code Editor (theme target)|
-|Opencode|Coding Tool (theme target)|

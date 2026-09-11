@@ -2,9 +2,10 @@
 Description:
 UseCase:
 Configfile:
-  - ~/.config/waybar
+  - ~/.config/ricing/waybar
 tags:
   - Ricing
+  - Bar
 ---
 # Docs and Sources
 
