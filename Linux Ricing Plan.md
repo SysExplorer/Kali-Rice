@@ -1,107 +1,131 @@
-
 ![[Rice-Goal-Output-Video.mp4]]
-## Brief
 
-My goal for this ricing project is to build a complete, fully-functioning Hyprland rice on Kali that matches my taste and vibe, while keeping a complete, fully-functioning KDE Plasma session as a safe fallback. The two must stay fully isolated: no Kali-specific config change or daemon change made for the rice may delete, overwrite, break, or interfere with Kali's default apps, tools, or configs. Nothing should break on a system update, and switching back to stock KDE should always feel untouched.
+## Apps / Software to Consider
 
-> UI should control system functionality through default, stable system CLI tools and core functionality rather than implementing the functionality itself, so nothing breaks upon updates.
+| Software / Apps                                                       | Function                                                                                                                                                                                           |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [[Hyprland]]                                                          | Compositor and Window Manager                                                                                                                                                                      |
+| [[Waybar]]                                                            | Status Bar (indicators or either open wofi or swaync center interactive controls)                                                                                                                  |
+| [[Wofi]]                                                              | Launcher, Menus and all list-based and prompt-based interactions                                                                                                                                   |
+| Kitty                                                                 | Quick Terminal                                                                                                                                                                                     |
+| Wave                                                                  | Work Terminal                                                                                                                                                                                      |
+| [[SwayNC]]                                                            | Notification Daemon + Quick Actions / Control Center (toggles, sliders, mpris, calendar, uptime and System Stats)                                                                                  |
+| wob                                                                   | Standalone OSD centered overlay for volume/brightness/mic-mute/theme changed/wallpaper changed (may ditched in favor of swaync manual Notifications)                                               |
+| Quickshell (candidate, replaces/supplements "Quick Shell" evaluation) | Highly customizable desktop widgets — Rainmeter-style clock, system-stat graphs/sparklines, per-app volume mixer; the fallback whenever SwayNC/Waybar hit a ceiling (see implications table below) |
+| swww / awww, Hyprpaper                                                | Wallpaper Manager                                                                                                                                                                                  |
+| Matugen                                                               | Dynamic Theme Engine                                                                                                                                                                               |
+| [[Hyprlock]]                                                          | Lock Screen                                                                                                                                                                                        |
+| Hypridle                                                              | Idle Management                                                                                                                                                                                    |
+| [[Cliphist]], wl-clipboard                                            | Clipboard (Wofi-integrated)                                                                                                                                                                        |
+| Thunar, Dolphin, Nemo                                                 | File Manager                                                                                                                                                                                       |
+| Flameshot but may change to (Grim, Slurp)                             | Screenshot                                                                                                                                                                                         |
+| OBS Studio, wl-screenrec                                              | Screen Recording                                                                                                                                                                                   |
+| PipeWire, WirePlumber, pavucontrol                                    | Audio                                                                                                                                                                                              |
+| NetworkManager, nmcli                                                 | Network                                                                                                                                                                                            |
+| BlueZ, bluetoothctl                                                   | Bluetooth                                                                                                                                                                                          |
+| Polkit, Polkit authentication agent                                   | Authentication                                                                                                                                                                                     |
+| SDDM, greetd                                                          | Login / Greeter                                                                                                                                                                                    |
+| xdg-desktop-portal, xdg-desktop-portal-hyprland                       | Wayland Portal                                                                                                                                                                                     |
+| Custom created icons (may switch to Papirus + papirus-folders)        | Icon Theme                                                                                                                                                                                         |
+| Fastfetch                                                             | System Info Fetch                                                                                                                                                                                  |
+| btop                                                                  | System Monitor                                                                                                                                                                                     |
+| Neovim                                                                | Text Editor                                                                                                                                                                                        |
+| VS Code                                                               | Code Editor (theme target)                                                                                                                                                                         |
+| Opencode                                                              | Coding Tool (theme target)                                                                                                                                                                         |
+| Brave                                                                 | Coding Tool (theme target)                                                                                                                                                                         |
+| Firefox                                                               | Coding Tool (theme target)                                                                                                                                                                         |
+| Obsidian                                                              | Coding Tool (theme target)                                                                                                                                                                         |
 
-**Separation model:** Riced and Normal Desktop sessions are separated through session-scoped autostart, never global autostart. Every daemon, symlink swap, or config the rice depends on (Waybar, SwayNC, swww, cliphist, hypridle, hyprlock, etc.) starts via Hyprland's own `exec-once` inside `~/.config/hyprland.lua`, never as a globally-enabled systemd user service, and never via an autostart entry that fires regardless of session.
+## Machine
 
-**Per-app config strategy:** Every app or tool specific to the rice is disabled by default and gets up to 3 separate config files: a `-default` (Kali/KDE baseline, used the first time before it gets swapped with either the rice or normal-session config), and a `-rice` (Hyprland-specific). At session start:
+- OS: Kali GNU/Linux Rolling x86_64
+- DE: KDE Plasma 6.7.4
+- WM: KWin (Wayland)
+- CPU: AMD Ryzen 5 8645HS (12) @ 5.02 GHz
+- GPU 1: NVIDIA GeForce RTX 2050 [Discrete]
+- GPU 2: AMD Radeon 760M Graphics [Integrated]
+- Memory: 3.90 GiB / 14.86 GiB (26%)
 
-- **Hyprland session:** `exec-once` in the Hyprland config file `~/.config/hyprland.lua` runs `cp ~/.config/<app>/<app>-rice.conf ~/.config/<app>/<app>.conf` for any shared app, fully replacing the live config with the rice version.
-- **KDE/Plasma session:** a script in `~/.config/plasma-workspace/env/` (sourced by Plasma before the desktop session starts) runs the mirror command, `cp ~/.config/<app>/<app>-default.conf ~/.config/<app>/<app>.conf`, restoring the baseline.
-- If a component ships as a systemd unit, it stays `disabled` at the systemd level and is started/stopped manually with `exec-once` from `~/.config/hyprland.lua` (e.g. `systemctl --user start waybar.service`), so it only ever runs inside the Hyprland session.
-- **Never edit the live `<app>.conf` directly** — always edit the `-rice` or `-default` source file, since the live file gets overwritten every session start and any direct edit will be silently lost. Every shared, session-swapped config file must start with a clear warning comment at the top, e.g.:
-
-```
-#⚠ AUTO-GENERATED — DO NOT EDIT THIS FILE DIRECTLY# This file is overwritten every session start.# Edit the source instead: <app>-rice.conf or <app>-default.conf
-
-```
-
-The result: two sessions that never leak into each other, even for apps they both use — nothing riced is running, symlinked, or copied over while working in stock KDE, and vice versa.
-
-These are the plan and, at the end, what I'll end up using going forward: _(will get updated after the ricing is full and mature — for now, plan/reference purposes only)_
-
-
-
-
-## [[Apps / Software to Consider]]
-
-| Software / Apps                                 | Function                    |
-| ----------------------------------------------- | --------------------------- |
-| [[Hyperland]]                                   | Compositor / Window Manager |
-| [[Waybar]]                                      | Status Bar                  |
-| [[Wofi]]                                        | Launcher / Menus            |
-| Kitty                                           | Terminal                    |
-| Wave                                            | Work Terminal               |
-| Zsh                                             | Shell                       |
-| [[SwayNC]]                                      | Notification Daemon         |
-| swww / awww, Hyprpaper                          | Wallpaper Manager           |
-| Matugen                                         | Dynamic Theme Engine        |
-| Hyprlock                                        | Lock Screen                 |
-| Hypridle                                        | Idle Management             |
-| [[Cliphist]], wl-clipboard                      | Clipboard                   |
-| Thunar, Dolphin, Nemo                           | File Manager                |
-| Flameshot but may change to (Grim, Slurp)       | Screenshot                  |
-| OBS Studio, wl-screenrec                        | Screen Recording            |
-| PipeWire, WirePlumber, pavucontrol              | Audio                       |
-| NetworkManager, nmcli                           | Network                     |
-| BlueZ, bluetoothctl                             | Bluetooth                   |
-| Polkit, Polkit authentication agent             | Authentication              |
-| SDDM, greetd                                    | Login / Greeter             |
-| xdg-desktop-portal, xdg-desktop-portal-hyprland | Wayland Portal              |
-| Papirus + papirus-folders                       | Icon Theme                  |
-| Fastfetch                                       | System Info Fetch           |
-| btop                                            | System Monitor              |
-| Neovim                                          | Text Editor                 |
-| VS Code                                         | Code Editor (theme target)  |
-| Opencode                                        | Coding Tool (theme target)  |
-
-## [[Machine]]
-
-- OS: Kali GNU/Linux Rolling x86_64  
-- DE: KDE Plasma 6.7.4  
-- WM: KWin (Wayland) 
-- CPU: AMD Ryzen 5 8645HS (12) @ 5.02 GHz  
-- GPU 1: NVIDIA GeForce RTX 2050 [Discrete]  
-- GPU 2: AMD Radeon 760M Graphics [Integrated]  
-- Memory: 3.90 GiB / 14.86 GiB (26%) 
-
-## [[Window Management]]
+## Functionalties
+### Window Management
 
 - Tiling
 - Scroll layout
-- Master layout
 - Floating windows
 - Normal / windowed mode (floating with borders)
 - Window borders
 - Window background effects
 - Workspace management
 - Workspace indicators
-- Workspace naming
-- Workspace rules
 - Special workspaces
-- "Quick Shell": alternative shell to evaluate later
 
-## [[Launching]]
+### Launching
 
-- Application menu / launcher: Rofi (rofi-wayland)
+- Application menu / launcher: Wofi
 - Application search
 - Active applications / window switcher
 - Tab / window switching
 - Quick file opener
-- Layout change pr app
+- Layout change per app
 - Bookmark search
 - Shortcut cheat sheet panel
-- Theme changer (via Rofi)
+- Theme changer (via Wofi)
 
-> Rofi (rofi-wayland) is the single interface surfacing several features that also appear under their own categories below: clipboard (via cliphist), calculator, theme changer, wallpaper picker, Wi-Fi picker, Bluetooth picker, power profiles, and power controls (poweroff, sleep, etc.).
+> Wofi is the single interface surfacing several features that also appear under their own categories below: clipboard (via cliphist), calculator, theme changer, wallpaper picker, Wi-Fi picker, Bluetooth picker, power profiles, and power controls (poweroff, sleep, etc.).
 
-## [[System Controls]]
+### Waybar / SwayNC / OSD Implications
 
-#### [[Wi-Fi]]
+_(New section — captures the full click-routing and display/interaction split worked out for status, notifications, quick settings, and on-screen displays.)_
+
+|Function|Display|Interaction|
+|---|---|---|
+|Wi-Fi|Waybar + SwayNC|Wofi list (scan / connect / password-prompt mode)|
+|Bluetooth|Waybar + SwayNC|Wofi list (bluetoothctl-backed device list + pairing)|
+|Sound (volume)|Waybar (%)|SwayNC slider widget (click path)|
+|Brightness|Waybar (%)|SwayNC slider widget (click path)|
+|OSD (volume / brightness / mic-mute)|wob — standalone, centered, independently positioned|None — auto-appears on keybind-triggered change only, no click needed|
+|Airplane mode|SwayNC|SwayNC toggle button|
+|Media (mpris)|SwayNC + lock screen|SwayNC mpris widget|
+|Per-app volume mixer|Quickshell (dynamic, auto-detecting) or static SwayNC sliders per hardcoded app|SwayNC slider (static) or Quickshell widget (dynamic)|
+|Power (sleep / suspend / hibernate / shutdown / reboot / lock)|—|Wofi power menu|
+|Power profiles|—|Wofi|
+|Battery / charging|SwayNC (`label` widget) + Waybar|Static, tooltip only|
+|System stats (CPU / RAM / GPU / disk / temp / network speed)|SwayNC `label` widgets (text-block approximation) for v1, or Quickshell (real graphs/sparklines) if adopted|Static / interval refresh (SwayNC), none (Quickshell, display-only)|
+|Workspaces|Waybar|Waybar click to switch|
+|Time|Waybar|Static|
+|Date|Waybar + SwayNC|Static; click date opens calendar|
+|Calendar|SwayNC|Built-in calendar widget|
+|Notifications + DND|SwayNC (+ Waybar icon/count)|SwayNC|
+|Tray|Waybar|Native tray click (app-defined)|
+|Clipboard|Waybar (optional icon)|Wofi (cliphist backend)|
+|Screenshot|—|Flameshot's own GUI (current default); grim/slurp + Wofi save/copy/annotate only if Flameshot is dropped later|
+|App launcher|—|Wofi|
+|Calculator|—|Wofi (qalc / libqalculate backend)|
+|Color picker|—|Wofi + hyprpicker, or grim+slurp+pixel-read script|
+|Theme changer|—|Wofi|
+|Quick Actions panel|SwayNC control center|SwayNC (this section directly implements the plan's own "Quick Actions" feature category)|
+
+**Key architectural rules established:**
+
+- **Waybar is read-only.** No sliders, no lists, no multi-step UI — just icon/text + a click that launches something else.
+- **SwayNC handles:** notifications, DND, calendar, mpris, and anything expressible as a toggle button, a drag-slider, or a static text label (including battery and basic system stats via the `label` widget trick). It has no native wifi/bluetooth scanner, device list, or text-input dialog.
+- **Wofi handles:** anything that's fundamentally a list-to-pick-from or a simple prompt/confirm — wifi networks, bluetooth devices, power menu, calculator, color picker, theme picker, clipboard history. Password entry uses Wofi's `-password` mode; confirmations are just 2-item lists.
+- **wob handles:** OSD only. It's a separate layer-shell surface, positioned independently of SwayNC's anchor — this is what allows OSDs to sit centered on screen while normal notifications and the control center sit wherever they're anchored.
+- **Quickshell is the fallback** for anything requiring real interactivity or graphics beyond the above three tools' native capabilities: live-drag sliders with animation, sparkline/graph system-stat widgets, a dynamic per-app volume mixer, and now the Rainmeter-style desktop widget layer (see below).
+
+### Desktop Widgets (Rainmeter-style)
+
+_(New section — captures the requirement for a highly customizable, always-visible widget layer for clock and system stats, similar to Rainmeter on Windows.)_
+
+- Requirement: persistent, freely-positioned desktop widgets (not a popup, not a bar module) for at least a clock and system stats (CPU / RAM / GPU / network), with full visual customization — fonts, colors, layout, real graphs/gauges rather than plain text.
+- Neither Waybar (a bar, not freeform desktop widgets) nor SwayNC (popup panel, not persistent desktop-anchored) fit this — this is a distinct third surface, closer to conky or Rainmeter itself than to a status bar or notification center.
+- **Leading candidate: Quickshell**, already flagged in this plan as an "alternative shell to evaluate later." It supports arbitrary layer-shell surfaces (so widgets can sit directly on the desktop, below or above windows as configured), real canvas/graph drawing (unlike SwayNC's text-only `label` widgets), and full QML-based styling control — closest match to Rainmeter's model of freely placed, skinnable widgets.
+- **Alternative candidates:** eww (also layer-shell based, slightly more limited widget/graphing primitives than Quickshell but lighter weight), or conky (the traditional Linux equivalent of this exact use case — far less visual customization than Quickshell/eww, but extremely lightweight and battle-tested for "just show me stats on the desktop").
+- Decision on Quickshell vs eww vs conky for this specific role is still open — worth resolving alongside the existing "Quick Shell" TBD line below, since they're now effectively the same decision.
+
+### System Controls
+
+#### Wi-Fi
 
 - Enable / disable Wi-Fi
 - List available networks
@@ -109,25 +133,25 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Show current connection
 - Network status
 - Wi-Fi selection
-- Wi-Fi picker via Rofi
+- Wi-Fi picker via Wofi
 
-#### [[Network]]
+#### Network
 
 - Ethernet
 - VPN
 - Connection management
 - Connection status
 
-#### [[Bluetooth]]
+#### Bluetooth
 
 - Enable / disable Bluetooth
 - Device discovery
 - Pairing
 - Connect / disconnect
 - Device battery status
-- Bluetooth picker via Rofi
+- Bluetooth picker via Wofi
 
-#### [[Audio]]
+#### Audio
 
 - Volume control
 - Mute / unmute
@@ -136,18 +160,18 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Per-application volume
 - Microphone mute
 
-#### [[Brightness]]
+#### Brightness
 
 - Brightness control
 - Increase / decrease brightness
 - Set brightness level
 - Per-monitor brightness where supported
 
-#### [[Power]]
+#### Power
 
 - Battery status
 - Charging status
-- Power profiles (selectable via Rofi)
+- Power profiles (selectable via Wofi)
 - Sleep
 - Suspend
 - Hibernate
@@ -155,11 +179,11 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Reboot
 - Lid behavior
 - Lock screen
-- Poweroff / sleep menu via Rofi
+- Poweroff / sleep menu via Wofi
 
-## [[Notifications & Media]]
+### Notifications & Media
 
-#### [[Notifications]]
+#### Notifications
 
 - Display notifications
 - Notification history
@@ -171,7 +195,7 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Waybar integration
 - Dynamic wallpaper-based theming
 
-#### [[Media]]
+#### Media
 
 - Play / pause
 - Previous / next
@@ -183,7 +207,7 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Waybar integration
 - Media controls on the lock screen
 
-## [[System Information]]
+### System Information
 
 - CPU usage
 - RAM usage
@@ -198,26 +222,26 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Fastfetch (custom ASCII art)
 - btop (system monitor)
 
-## [[Wallpaper & Appearance]]
+### Wallpaper & Appearance
 
-#### [[Wallpaper]]
+#### Wallpaper
 
 - Browse wallpapers
 - Wallpaper selection
 - Instant wallpaper switching
 - Wallpaper transitions
 - Multi-monitor support
-- Rofi integration (wallpaper picker)
+- Wofi integration (wallpaper picker)
 - Wallpaper-based color generation
-- Wallpaper daemon handles display and transitions behind Rofi's picker
+- Wallpaper daemon handles display and transitions behind Wofi's picker
 
-#### [[Dynamic Theming]]
+#### Dynamic Theming
 
 - Extract colors from the current wallpaper
 - Generate a consistent color palette
 - Apply colors to the desktop
 - Apply colors to the status bar (Waybar)
-- Apply colors to the launcher (Rofi)
+- Apply colors to the launcher (Wofi)
 - Apply colors to notifications
 - Apply colors to the terminal
 - Apply colors to GTK
@@ -227,22 +251,22 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Reload affected applications automatically
 - Keep a shared color source while allowing separate configurations
 
-#### [[Color Themes]]
+#### Color Themes
 
 - Terminal
 - Opencode
 - VS Code
 
-#### [[GTK / Qt Appearance]]
+#### GTK / Qt Appearance
 
-- I will Probablly Custom Create Mine including the Floating Windo Controls
+- I will probably custom create mine including the floating window controls
 - GTK application styling
 - Qt application styling
 - Dark / light mode
 - Dynamic wallpaper-based colors
 - Consistent appearance across applications
 
-#### [[Icons]]
+#### Icons
 
 - Application icons
 - File icons
@@ -252,13 +276,13 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Decide whether icons themselves should dynamically change
 - Selected icon theme: Papirus + papirus-folders (custom icon set planned for later)
 
-#### [[Cursor]]
+#### Cursor
 
 - Cursor style
 - Cursor size
 - Theme integration
 
-#### [[Fonts]]
+#### Fonts
 
 - UI font
 - Terminal font
@@ -266,9 +290,9 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Nerd Font
 - Icon font
 
-## [[Authentication & Session]]
+### Authentication & Session
 
-#### [[Lock Screen]]
+#### Lock Screen
 
 - Lock / unlock
 - Password authentication
@@ -280,7 +304,7 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Separate configuration from the greeter
 - Option to use a different theme from the desktop
 
-#### [[Login / Greeter]]
+#### Login / Greeter
 
 - Login screen
 - User selection
@@ -291,22 +315,22 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Separate configuration from the lock screen
 - Option to use a different theme from the desktop
 
-#### [[Privileged Actions]]
+#### Privileged Actions
 
 - Graphical authentication dialogs
 - Authentication for privileged actions from graphical applications
 
-## [[Clipboard & File Management]]
+### Clipboard & File Management
 
-#### [[Clipboard]]
+#### Clipboard
 
 - Clipboard history
 - Text history
 - Image history
 - Search
-- Rofi integration (via cliphist)
+- Wofi integration (via cliphist)
 
-#### [[File Management]]
+#### File Management
 
 - File browsing
 - Open files
@@ -317,11 +341,11 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Thumbnails
 - Archive handling
 - Theme and icon integration
-- Other Pro features related to Conneting to remote Drives and more
+- Other pro features related to connecting to remote drives and more
 
-## [[Screenshots & Recording]]
+### Screenshots & Recording
 
-#### [[Screenshots]]
+#### Screenshots
 
 - Full screen
 - Window
@@ -330,7 +354,7 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Save to file
 - Optional annotation
 
-#### [[Screen Recording]]
+#### Screen Recording
 
 - Full screen
 - Window
@@ -339,9 +363,9 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Microphone
 - Recording indicator
 
-## [[Display & Session Management]]
+### Display & Session Management
 
-#### [[Idle Management]]
+#### Idle Management
 
 - Detect inactivity
 - Automatic screen locking
@@ -349,7 +373,7 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Suspend
 - Idle inhibition while watching media
 
-#### [[Display Management]]
+#### Display Management
 
 - Resolution
 - Refresh rate
@@ -358,29 +382,27 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Multi-monitor configuration
 - Display profiles
 
-#### [[Night Light]]
+#### Night Light
 
 - Blue-light reduction
 - Automatic schedule
 - Manual color temperature
 
-#### [[System Tray]]
+#### System Tray
 
 - Tray applications
 - Network / VPN applications
 - Background applications
 
-## [[Desktop Utilities]]
+### Desktop Utilities
 
-
-#### [[Notes and Code]]
+#### Notes and Code
 
 - Neovim for terminals and light edits (will use fzf with it)
-- VsCode for Real Job
-- Obsidian as Main Notes App
+- VS Code for real job
+- Obsidian as main notes app
 
-
-#### [[OSD]]
+#### OSD
 
 - Volume
 - Brightness
@@ -388,8 +410,9 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Media controls
 - Other system feedback
 - Wallpaper-based theme
+- **Resolved:** wob, standalone centered overlay, keybind-triggered only (see implications table above)
 
-#### [[Desktop Widgets]]
+#### Desktop Widgets
 
 - CPU usage
 - RAM usage
@@ -398,21 +421,22 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Weather
 - Clock
 - Other system information
+- **Resolved direction:** Rainmeter-style persistent, freely-positioned, highly customizable widgets — leading candidate Quickshell, alternatives eww / conky (see Desktop Widgets section above)
 
-#### [[Calculator]]
+#### Calculator
 
 - Quick calculations
 - Unit conversion
-- Rofi integration
+- Wofi integration
 
-#### [[Color Picker]]
+#### Color Picker
 
 - Pick a color from the screen (grab HEX from screen)
 - HEX / RGB output
 - Copy to clipboard
-- Rofi integration
+- Wofi integration
 
-#### [[Quick Actions]]
+#### Quick Actions
 
 - Wi-Fi
 - Bluetooth
@@ -422,8 +446,9 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Power profile
 - Dark / light mode
 - Other frequently used system controls
+- **Resolved:** this is SwayNC's control center (see implications table above)
 
-#### [[Search]]
+#### Search
 
 - Applications
 - Files
@@ -431,11 +456,11 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Bookmarks
 - Commands
 
-## [[Terminal & Shell]]
+### Terminal & Shell
 
-#### [[Terminal]]
+#### Terminal
 
-- Kitty (If i cant find a better one)
+- Kitty (if I can't find a better one)
 - Terminal customization
 - Transparency
 - Visual effects
@@ -444,22 +469,22 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - btop for in-terminal system stats
 - Neovim, used instead of Kate as the text editor
 
-#### [[Work Terminal]]
+#### Work Terminal
 
 - Wave
 - Development / work environment
 - May be dropped later
 
-#### [[Shell]]
+#### Shell
 
 - Zsh
 - Command completion
 - Syntax highlighting
 - Prompt customization
 
-## [[Wayland & Desktop Integration]]
+### Wayland & Desktop Integration
 
-#### [[Wayland / Desktop Integration]]
+#### Wayland / Desktop Integration
 
 - Screen sharing
 - Screenshot integration
@@ -469,39 +494,57 @@ These are the plan and, at the end, what I'll end up using going forward: _(will
 - Graphical authentication
 - Desktop application integration
 
-# [[Features Yet to Be Decided]]
+### Features Yet to Be Decided
 
-- Exact notification daemon
+_(Resolved items from this and prior discussion have been removed or annotated above; only genuinely open items remain.)_
+
 - Exact wallpaper manager
 - Exact dynamic theme engine
 - Exact GTK theme
 - Exact Qt theme
-- Exact icon theme (leaning toward Papirus + papirus-folders, with custom icons planned later)
 - Exact cursor theme
 - Exact font(s)
 - Exact lock screen
 - Exact greeter
 - Exact idle manager
-- Exact clipboard backend
 - Exact file manager
-- Exact screenshot tool
 - Exact screen recorder
-- Exact OSD solution
-- Exact audio control UI
-- Exact network UI
-- Exact Bluetooth UI
-- Exact power-management UI
 - Exact display-management tool
 - Exact XDG portal implementation
 - Exact Polkit agent
-- Exact system tray solution
-- Exact media-control implementation
-- Desktop widgets
 - Night-light implementation
 - Workspace configuration
-- Calculator
-- Color picker
-- Quick-actions interface
 - Search extensions / providers
 - System fonts and per-app fonts
-- Whether "Quick Shell" replaces or supplements Hyprland's current shell setup
+- **Quickshell vs eww vs conky** for the Rainmeter-style desktop widget layer (clock + system stats) — replaces the old, vaguer "whether 'Quick Shell' replaces or supplements Hyprland's current shell setup" line, now scoped specifically to desktop widgets rather than a general shell replacement
+- Whether Quickshell (if adopted for widgets) should also absorb the per-app volume mixer and system-stat graphing edge cases noted in the implications table, or whether those stay minimal (SwayNC labels / static sliders) for v1
+
+## Function → App Mapping
+
+| Functionality                                        | App Used                         |
+| ---------------------------------------------------- | -------------------------------- |
+| Workspaces                                           | Waybar                           |
+| Time                                                 | Waybar                           |
+| Tray                                                 | Waybar                           |
+| Airplane mode                                        | SwayNC                           |
+| Media (mpris)                                        | SwayNC                           |
+| Calendar                                             | SwayNC                           |
+| Quick Actions panel                                  | SwayNC                           |
+| OSD (volume/brightness/mic-mute)                     | wob                              |
+| Power (sleep/suspend/hibernate/shutdown/reboot/lock) | Wofi                             |
+| Power profiles                                       | Wofi                             |
+| App launcher                                         | Wofi                             |
+| Calculator                                           | Wofi                             |
+| Theme changer                                        | Wofi                             |
+| Wi-Fi                                                | Waybar + SwayNC + Wofi           |
+| Bluetooth                                            | Waybar + SwayNC + Wofi           |
+| Sound (volume)                                       | Waybar + SwayNC                  |
+| Brightness                                           | Waybar + SwayNC                  |
+| Per-app volume mixer                                 | SwayNC or Quickshell             |
+| Battery / charging                                   | SwayNC + Waybar                  |
+| System stats (CPU/RAM/GPU/disk/temp/network)         | SwayNC or Quickshell             |
+| Date                                                 | Waybar + SwayNC                  |
+| Notifications + DND                                  | SwayNC + Waybar                  |
+| Clipboard                                            | Waybar + Wofi                    |
+| Screenshot                                           | Flameshot (or grim/slurp + Wofi) |
+| Color picker                                         | Wofi + hyprpicker                |

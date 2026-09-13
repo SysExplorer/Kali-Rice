@@ -2,111 +2,115 @@
 Description:
 UseCase:
 Configfile:
-  - ~/.config/waybar
+  - ~/.config/ricing/cliphist
 tags:
   - Ricing
 ---
 # Docs and Sources
 
-| DOCs                                                | Porpose |
-| --------------------------------------------------- | ------- |
-| github.com/sentriz/cliphist#packaging               |         |
-| wiki.hypr.land/Useful-Utilities/Clipboard-Managers/ |         |
-| github.com/Linus789/wl-clip-persist                 |         |
-
+| DOCs                                                              | Porpose |
+| ----------------------------------------------------------------- | ------- |
+| github.com/sentriz/cliphist#packaging                             |         |
+| wiki.hypr.land/Useful-Utilities/Clipboard-Managers/               |         |
+| github.com/Linus789/wl-clip-persist                               |         |
+| github.com/sentriz/cliphist/blob/master/contrib/cliphist-wofi-img |         |
 
 # Installation
 
-Installed with `sudo apt install cliphist -y`
-
-```text
+Installed with `sudo apt install cliphist wl-clipboard -y`
 
 ```
-
-
-# Quick Command guide
-| command         | usage |
-| --------------- | ----- |
-| cliphist list   | to    |
-| cliphist store  | to    |
-| cliphist decode | to    |
-| cliphist delete | to    |
-| cliphist wipe   | to    |
-
-
+wl-clipboard provides wl-copy/wl-paste, the actual Wayland clipboard tools.
+cliphist is the history layer on top: it has no daemon of its own.
+```
 
 # Config
 
-### Whatch Clipboard
-
-Text:
+Create a dedicated ricing folder for cliphist's config, thumbnail cache, and the image-preview script:
 
 ```bash
+mkdir -p ~/.config/ricing/cliphist
+touch ~/.config/ricing/cliphist/config
+```
 
+```
+config      - cliphist's own settings file (db path, item limits, etc.)
+```
+
+Paste this into `config`:
+
+```
+db-path /home/<username>/.config/ricing/cliphist/db
+max-items 50
+max-dedupe-search 100
+preview-width 60
+```
+
+```
+db-path            - where the history database file lives
+max-items          - how many entries are kept before oldest get dropped
+max-dedupe-search  - how far back to check for exact-duplicate copies
+preview-width      - max characters shown per entry in `cliphist list`, kept short here so wofi entries stay one line instead of wrapping
+```
+
+Don't forget to replace `<username>` with your actual Linux username.
+
+Cliphist only reads this file if it knows where to look. Added to Hyprland's `ENVIRONMENT VARIABLES` section in `~/.config/ricing/hypr/hyprland.lua`, alongside the NVIDIA/Electron variables:
+
+```lua
+-- Set cliphist to read its config file from this path   
+hl.env("CLIPHIST_CONFIG_PATH", "/home/<username>/.config/ricing/cliphist/config")
+```
+
+Don't forget to replace `<username>` with your actual Linux username.
+
+```
+Every cliphist invocation (the watchers below, list, decode, delete, wipe)
+reads this same config automatically once the env var points at it - no
+need to repeat flags on every command.
+```
+
+## Autostart with Hyprland
+
+Added to the  `Autostart` block so Cliphist reads any text or images copied toour clipboard:
+
+```lua
+  hl.exec_cmd("wl-paste --type text --watch cliphist store")
+  hl.exec_cmd("wl-paste --type image --watch cliphist store")
+```
+
+```
+Each wl-paste pipe any new clipboard content into cliphist store.
+```
+
+## Binding and Wofi Integration
+
+Paste this line to show clipboard entries:
+
+```lua
+hl.bind(mainMod .. " + ALT + C", hl.dsp.exec_cmd("pkill -x wofi || cliphist list | wofi -S dmenu -p \"Clipboard:\" -c ~/.config/ricing/wofi/config -s ~/.config/ricing/wofi/style.css | cliphist decode | setsid -f wl-copy"))
 
 ```
 
+%% Huge Bug: the paste after select works ones and after that continue to past same thing even if another thing is selected %%
 
 
-### Wofi Integration
+And this to delete a single entry from history
 
-Text:
-
-```bash
-
- 
-```
-
-### Key Binds
-
-
-Text:
-
-```bash
-
-
+```lua
+hl.bind(mainMod .. " + ALT + V", hl.dsp.exec_cmd("pkill -x wofi || cliphist list | wofi -S dmenu -p \"Remove from Clipboard:\" -c ~/.config/ricing/wofi/config -s ~/.config/ricing/wofi/style.css | cliphist delete"))
 
 ```
 
-```text
+This to wipe entire history (confirmation gate before it fires)
 
+```lua
+hl.bind(mainMod .. " + ALT + X", hl.dsp.exec_cmd("pkill -x wofi || confirm=$(echo -n \"Clear\" | wofi -S dmenu -p \"Clear Clipboard:\" -c ~/.config/ricing/wofi/config -s ~/.config/ricing/wofi/style.css); [ \"$confirm\" = \"Clear\" ] && cliphist wipe"))
 ```
 
+Test each bind:
 
-Text:
-
-```bash
-
-```
-
-
-# Draft
-
-sudo apt install cliphist
-
-Just to be clear, the thing actually saving what u copy and pasting it as wl-clipboard and wl-paste, ut the issue is that they only save the last copired item so they can even show a list of previuslly copied item. this where cliphist comes in, it saves what ever wl-clipboard copied as a list and can send it back to wl-paste to paste it so its just a store and we need to make it listen to whatever wl-paste have and sacve it to its stor. and since  it stors them as lists, we will just pipe it to wofi to show our copied items history as list and thats how we will be using it. to pin/clear and make items persists even when we close the original copied item source ..... 
-
-%%
-Plan:
-Set copy bind 
-Set paste bind (last item)
-Set paste from history list bind 
-Set delete from history list bind 
-Set wipe history bind 
-Setup config file with variables and a custom database file location
-
-Command Samples:
-
-hl.exec_cmd("cliphist list | wofi -S dmenu | cliphist decode | wl-copy")
-
-hl.bind("Ctrl + C, hl.dsp.exec_cmd(""))
-
-Planned Binds:
-Ctrl + C   | copy
-Ctrl + V   | paste
-Ctrl + Shift + V   | paste from history
-Ctrl + Shift + C    | delete selected from history
-Ctrl + Shift + C      | wipe history
-
-%%
+`SUPER + ALT + C ` To Open the Clipboard 
+`SUPER + ALT + V` To delete an entry from Clipboard 
+`SUPER + ALT + X ` To clear the Clipboard 
 

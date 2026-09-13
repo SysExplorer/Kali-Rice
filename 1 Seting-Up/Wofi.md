@@ -45,10 +45,10 @@ Don't forget to replace `<username>` with your actual Linux username.
 
 Paste this to the style config file:
 ##### Test Style
-```
+
 ```css
 
-@define-color bg          #0b111a;
+[@define-color bg          #0b111a;
 @define-color bg_alt      #101a27;
 @define-color bg_hover    #172638;
 @define-color bg_selected #203448;
@@ -172,7 +172,7 @@ scrollbar slider {
 scrollbar slider:hover {
     background-color: @copper;
 }
-* ------------------------------------------------------------ */
+
 
 #unselected {
     color: @text;
@@ -209,7 +209,7 @@ An app launcher should pop up listing installed applications.
 Bound to a key in `~/.config/ricing/hypr/hyprland.lua`, under the keybinds section:
 
 ```lua
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("wofi --show drun --conf ~/.config/ricing/wofi/config --style ~/.config/ricing/wofi/style.css"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("pkill -x wofi || wofi --show drun --conf ~/.config/ricing/wofi/config --style ~/.config/ricing/wofi/style.css"))
 ```
 
 ```text
