@@ -8,12 +8,12 @@ tags:
 ---
 # Docs and Sources
 
-| DOCs                                                              | Porpose |
-| ----------------------------------------------------------------- | ------- |
-| github.com/sentriz/cliphist#packaging                             |         |
-| wiki.hypr.land/Useful-Utilities/Clipboard-Managers/               |         |
-| github.com/Linus789/wl-clip-persist                               |         |
-| github.com/sentriz/cliphist/blob/master/contrib/cliphist-wofi-img |         |
+| DOCs                                                | Porpose |
+| --------------------------------------------------- | ------- |
+| github.com/sentriz/cliphist#packaging               |         |
+| wiki.hypr.land/Useful-Utilities/Clipboard-Managers/ |         |
+| github.com/Linus789/wl-clip-persist                 |         |
+
 
 # Installation
 
@@ -88,12 +88,9 @@ Each wl-paste pipe any new clipboard content into cliphist store.
 Paste this line to show clipboard entries:
 
 ```lua
-hl.bind(mainMod .. " + ALT + C", hl.dsp.exec_cmd("pkill -x wofi || cliphist list | wofi -S dmenu -p \"Clipboard:\" -c ~/.config/ricing/wofi/config -s ~/.config/ricing/wofi/style.css | cliphist decode | setsid -f wl-copy"))
+hl.bind(mainMod .. " + ALT + C", hl.dsp.exec_cmd("pkill -x wofi || cliphist list | wofi -S dmenu -p \"Clipboard:\" -c ~/.config/ricing/wofi/config -s ~/.config/ricing/wofi/style.css | cliphist decode | wl-copy"))
 
 ```
-
-%% Huge Bug: the paste after select works ones and after that continue to past same thing even if another thing is selected %%
-
 
 And this to delete a single entry from history
 

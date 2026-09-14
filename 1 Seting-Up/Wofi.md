@@ -209,11 +209,11 @@ An app launcher should pop up listing installed applications.
 Bound to a key in `~/.config/ricing/hypr/hyprland.lua`, under the keybinds section:
 
 ```lua
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("pkill -x wofi || wofi --show drun --conf ~/.config/ricing/wofi/config --style ~/.config/ricing/wofi/style.css"))
+hl.bind("ALT + SPACE", hl.dsp.exec_cmd("pkill -x wofi || wofi --show drun --conf ~/.config/ricing/wofi/config --style ~/.config/ricing/wofi/style.css"))
 ```
 
 ```text
 Runs wofi only when the keybind is pressed, pointing it at our ricing config
 ```
 
-Reload Hyprland's config, then test by pressing `mainMod + L`.
+Reload Hyprland's config, then test by pressing `ALT + SPACE`.
