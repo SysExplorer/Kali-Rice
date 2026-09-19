@@ -2,83 +2,58 @@
 Description:
 UseCase:
 Configfile:
-  - ~/.config/waybar
+  - ~/.config/ricing/hypr/hyprlock.conf
+  - ~/.config/ricing/hypr/hypridle.conf 
 tags:
   - Ricing
+  - Lock-Screen
+  - Idle
 ---
 # Docs and Sources
 
-| DOCs                                                     | Porpose |
-| -------------------------------------------------------- | ------- |
-| wiki.hypr.land/Hypr-Ecosystem/hyprlock/                  |         |
-| wiki.archlinux.org/title/Hyprlock<br>                    |         |
-| github.com/hyprwm/hyprlock                               |         |
-| wiki.hypr.land/Hypr-Ecosystem/hypridle/                  |         |
-| github.com/hyprwm/hypridle                               |         |
-| github.com/hyprwm/hyprlock/blob/main/assets/example.conf |         |
+|DOCs|Porpose|
+|---|---|
+|wiki.hypr.land/Hypr-Ecosystem/hyprlock/|`Config` – hyprlock widgets, variables and options reference|
+|wiki.archlinux.org/title/Hyprlock<br>|`Config` – usage notes and tips|
+|github.com/hyprwm/hyprlock|`Installation` – source repo|
+|github.com/hyprwm/hyprlock/blob/main/assets/example.conf|`Config` – upstream example our `hyprlock.conf` is based on|
+|wiki.hypr.land/Hypr-Ecosystem/hypridle/|`Config` – hypridle `general` and `listener` options reference|
+|github.com/hyprwm/hypridle|`Installation` – source repo|
 
 # Installation
 
 Installed with `sudo apt install hyprlock hypridle -y`
 
-```text
-
 ```
-
-# Disable Systemd autostart
-
-Text:
-
-```bash
-
-
-```
-
-Text:
-
-```bash
-
- 
+hyprlock is the lock screen and hypridle is the idle daemon. hypridle watches for inactivity and runs the actions we give it (dim, lock, screen off, suspend), and it calls hyprlock when it is time to lock.
 ```
 
 # Autostart with Hyprland
 
+Only hypridle needs to be started, pointing at our custom config file. Added to the `Autostart` section of `~/.config/ricing/hypr/hyprland.lua`:
 
-Text:
-
-```bash
-
-
-
+```lua
+  hl.exec_cmd("hypridle -c ~/.config/ricing/hypr/hypridle.conf")
 ```
 
 ```text
-
+hyprlock is not autostarted. It only runs when the keybind is pressed or when hypridle tells it to lock, so it never runs outside the Hyprland session.
 ```
 
 # Config
 
-Text:
+Create both config files inside the ricing folder:
 
 ```bash
-
-```
-
-# Draft
-
-install
-create config file
 touch ~/.config/ricing/hypr/hyprlock.conf
 touch ~/.config/ricing/hypr/hypridle.conf
-
-
-autostart & point them to config file
-hl.exec_cmd("hypridle -c ~/.config/ricing/hypr/hypridle.conf")
-
-Config file:
-
-Hyprlock:
 ```
+
+## Hyprlock
+
+Paste this into `~/.config/ricing/hypr/hyprlock.conf`:
+
+```ini
 # sample hyprlock.conf
 # for more configuration options, refer https://wiki.hyprland.org/Hypr-Ecosystem/hyprlock
 #
@@ -188,12 +163,13 @@ label {
     halign = center
     valign = center
 }
-
 ```
 
+## Hypridle
 
-Hypridle:
-```
+Paste this into `~/.config/ricing/hypr/hypridle.conf`:
+
+```ini
 general {
     lock_cmd = pidof hyprlock || hyprlock -c ~/.config/ricing/hypr/hyprlock.conf                         # avoid starting multiple hyprlock instances.
     before_sleep_cmd = loginctl lock-session                                  # lock before suspend.
@@ -230,11 +206,22 @@ listener {
 }
 ```
 
+# Binding
 
-Binds
-add:
-```
+Bound to a key in `~/.config/ricing/hypr/hyprland.lua`, under the keybinds section, to lock the screen manually:
+
+```lua
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock -c ~/.config/ricing/hypr/hyprlock.conf"))
 ```
 
-Now try `SUPER + L` and the screen should lock
+```text
+Runs hyprlock with our custom config only when the keybind is pressed.
+```
+
+# Testing
+
+Press `SUPER + L` and the screen should lock. or:
+
+```bash
+loginctl lock-session
+```
