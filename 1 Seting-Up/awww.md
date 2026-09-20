@@ -61,7 +61,7 @@ Put both binaries on `PATH`:
 
 ```bash
 cargo build --release
-cp target/release/swww target/release/swww-daemon ~/.local/bin/
+cp target/release/awww target/release/awww-daemon ~/.local/bin/
 ```
 
 Confirm the shell actually finds them:

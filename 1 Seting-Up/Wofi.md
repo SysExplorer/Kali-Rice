@@ -28,7 +28,7 @@ Create the ricing config folder and a matched config/style pair:
 ```bash
 mkdir -p ~/.config/ricing/wofi
 touch ~/.config/ricing/wofi/config
-touch ~/.config/ricing/wofi/stylew.css
+touch ~/.config/ricing/wofi/style.css
 ```
 
 Paste this into `config` so it points at its matching stylesheet:
@@ -48,7 +48,7 @@ Paste this to the style config file:
 
 ```css
 
-[@define-color bg          #0b111a;
+@define-color bg          #0b111a;
 @define-color bg_alt      #101a27;
 @define-color bg_hover    #172638;
 @define-color bg_selected #203448;
