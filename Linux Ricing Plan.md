@@ -1,4 +1,16 @@
 ![[Rice-Goal-Output-Video.mp4]]
+# Ongoing
+
+- [ ] Waybar and system-control basics
+- [ ] Matugen
+- [ ] GTK/Qt - icon - cursor - Fonts
+- [ ] Fonts manager - File manager - Waypaper
+- [ ] OBS
+- [ ] Night light and the system info window
+- [ ] Glass and desktop widgets
+- [ ] Hyprland Dock (nwg-dock-hyprland)
+- [ ] 
+
 
 ## Apps / Software to Consider
 
@@ -6,6 +18,7 @@
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [[Hyprland]]                                                   | Compositor and Window Manager                                                                                                                        |
 | [[Waybar]]                                                     | Status Bar (indicators or either open wofi or swaync center interactive controls)                                                                    |
+| [[Hypr Dock]]                                                  |                                                                                                                                                      |
 | [[Wofi]]                                                       | Launcher, Menus and all list-based and prompt-based interactions                                                                                     |
 | Kitty                                                          | Quick Terminal (+a quake mode with bind)                                                                                                             |
 | Wave                                                           | Work Terminal                                                                                                                                        |
@@ -17,7 +30,7 @@
 | [[Cliphist]], wl-clipboard                                     | Clipboard (Wofi-integrated)                                                                                                                          |
 | Thunar, Dolphin, Nemo                                          | File Manager                                                                                                                                         |
 | [[Flameshot]]                                                  | Screenshot                                                                                                                                           |
-| OBS Studio, wl-screenrec                                       | Screen Recording                                                                                                                                     |
+| [[OBS Studio]], wl-screenrec                                   | Screen Recording                                                                                                                                     |
 | PipeWire, WirePlumber, pavucontrol                             | Audio                                                                                                                                                |
 | NetworkManager, nmcli                                          | Network                                                                                                                                              |
 | BlueZ, bluetoothctl                                            | Bluetooth                                                                                                                                            |
@@ -47,11 +60,11 @@
 ### Window Management
 
 - [x]  Tiling
-- [ ]  Scroll layout
+- [x]  Scroll layout
 - [ ]  Floating windows
 - [ ]  Normal / windowed mode (floating with borders)
-- [ ]  Window borders
-- [ ]  Window background effects
+- [x]  Window borders
+- [x]  Window background effects
 - [ ]  Workspace management
 - [ ]  Workspace indicators
 - [ ]  Special workspaces
@@ -327,8 +340,8 @@ _(New section — captures the requirement for a highly customizable, always-vis
 - [x]  Clipboard history
 - [x]  Text history
 - [x]  Image history
-- [ ]  Search
-- [ ]  Wofi integration (via cliphist)
+- [x]  Search
+- [x]  Wofi integration (via cliphist)
 
 #### File Management
 
@@ -368,7 +381,7 @@ _(New section — captures the requirement for a highly customizable, always-vis
 #### Idle Management
 
 - [x]  Detect inactivity
-- [ ]  Automatic screen locking
+- [x]  Automatic screen locking
 - [ ]  Display sleep
 - [ ]  Suspend
 - [ ]  Idle inhibition while watching media

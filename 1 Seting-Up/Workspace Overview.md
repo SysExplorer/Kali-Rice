@@ -10,13 +10,12 @@ tags:
 ---
 # Docs and Sources
 
-|DOCs|Porpose|
-|---|---|
-|https://github.com/yayuuu/hyprland-scroll-overview|`Installation` + `Config` – scrolloverview plugin repo, hyprpm install, properties, binds|
-|https://github.com/sandwichfarm/hyprexpo|`Reference` – hyprexpo, the plugin scrolloverview is based on|
-|https://github.com/KZDKM/Hyprspace|`Reference` – alternative workspace overview plugin, not used|
-|https://github.com/OpalAayan/snappy-switcher|`Installation` + `Usage` – active windows switcher, build deps, commands and flags|
-|https://github.com/OpalAayan/snappy-switcher/blob/main/docs/CONFIGURATION.md|`Config` – every `config.ini` key (modes, theme, layout, icons, font)|
+| DOCs                                                                 | Porpose                                                                                   |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| github.com/yayuuu/hyprland-scroll-overview                           | `Installation` + `Config` – scrolloverview plugin repo, hyprpm install, properties, binds |
+| github.com/yayuuu/hyprland-scroll-overview/wiki                      |                                                                                           |
+| github.com/OpalAayan/snappy-switcher                                 | `Installation` + `Usage` – active windows switcher, build deps, commands and flags        |
+| github.com/OpalAayan/snappy-switcher/blob/main/docs/CONFIGURATION.md | `Config` – every `config.ini` key (modes, theme, layout, icons, font)                     |
 
 ```text
 Two separate tools are set up here. scrolloverview shows all workspaces at once,
@@ -74,6 +73,7 @@ autostart hook, so the KDE session never loads the plugin.
 Added to `~/.config/ricing/hypr/hyprland.lua`:
 
 ```lua
+-- Scrolloverview Plugin
 hl.config({
     plugin = {
         scrolloverview = {
