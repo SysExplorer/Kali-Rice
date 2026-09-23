@@ -5,45 +5,49 @@
 - [ ] Matugen
 - [ ] GTK/Qt - icon - cursor - Fonts
 - [ ] Fonts manager - File manager - Waypaper
-- [ ] OBS
+- [x] OBS
 - [ ] Night light and the system info window
 - [ ] Glass and desktop widgets
 - [ ] Hyprland Dock (nwg-dock-hyprland)
-- [ ] 
+- [ ] System stats (btm / Mission Center  / Gnome System Monitor)
+- [ ] Gnome settings
+- [x] Walker 
+- [x] Nautilius
+- [ ] Media app (Photos - Videos - Audio - Documents (pdf))
 
 
 ## Apps / Software to Consider
 
-| Software / Apps                                                | Function                                                                                                                                             |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [[Hyprland]]                                                   | Compositor and Window Manager                                                                                                                        |
-| [[Waybar]]                                                     | Status Bar (indicators or either open wofi or swaync center interactive controls)                                                                    |
-| [[Hypr Dock]]                                                  |                                                                                                                                                      |
-| [[Wofi]]                                                       | Launcher, Menus and all list-based and prompt-based interactions                                                                                     |
-| Kitty                                                          | Quick Terminal (+a quake mode with bind)                                                                                                             |
-| Wave                                                           | Work Terminal                                                                                                                                        |
-| [[SwayNC]]                                                     | Notification Daemon + Quick Actions / Control Center (toggles, sliders, mpris, calendar, uptime and System Stats)                                    |
-| wob                                                            | Standalone OSD centered overlay for volume/brightness/mic-mute/theme changed/wallpaper changed (may ditched in favor of swaync manual Notifications) |
-| [[awww]]                                                       | Wallpaper Manager                                                                                                                                    |
-| Matugen & waypaper                                             | Dynamic Theme Engine + wallpaper UI                                                                                                                  |
-| [[Hyprlock & Hypridle]]                                        | Lock Screen & Idle Management                                                                                                                        |
-| [[Cliphist]], wl-clipboard                                     | Clipboard (Wofi-integrated)                                                                                                                          |
-| Thunar, Dolphin, Nemo                                          | File Manager                                                                                                                                         |
-| [[Flameshot]]                                                  | Screenshot                                                                                                                                           |
-| [[OBS Studio]], wl-screenrec                                   | Screen Recording                                                                                                                                     |
-| PipeWire, WirePlumber, pavucontrol                             | Audio                                                                                                                                                |
-| NetworkManager, nmcli                                          | Network                                                                                                                                              |
-| BlueZ, bluetoothctl                                            | Bluetooth                                                                                                                                            |
-| [[hyprpolkitagent]]                                            | Authentication                                                                                                                                       |
-| SDDM, greetd                                                   | Login / Greeter                                                                                                                                      |
-| xdg-desktop-portal, xdg-desktop-portal-hyprland                | Wayland Portal                                                                                                                                       |
-| Custom created icons (may switch to Papirus + papirus-folders) | Icon Theme                                                                                                                                           |
-| Neovim                                                         | Text Editor                                                                                                                                          |
-| VS Code                                                        | Code Editor (theme target)                                                                                                                           |
-| Opencode                                                       | Coding Tool (theme target)                                                                                                                           |
-| Brave                                                          | Coding Tool (theme target)                                                                                                                           |
-| Firefox                                                        | Coding Tool (theme target)                                                                                                                           |
-| Obsidian                                                       | Coding Tool (theme target)                                                                                                                           |
+| Software / Apps                                 | Function                                                                                                                                             |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [[Hyprland]]                                    | Compositor and Window Manager                                                                                                                        |
+| [[Waybar]]                                      | Status Bar (indicators or either open wofi or swaync center interactive controls)                                                                    |
+| [[Hypr Dock]]                                   |                                                                                                                                                      |
+| [[Wofi]] / [[Walker]]                           | Launcher, Menus and all list-based and prompt-based interactions                                                                                     |
+| Kitty                                           | Quick Terminal (+a quake mode with bind)                                                                                                             |
+| Wave                                            | Work Terminal                                                                                                                                        |
+| [[SwayNC]]                                      | Notification Daemon + Quick Actions / Control Center (toggles, sliders, mpris, calendar, uptime and System Stats)                                    |
+| wob                                             | Standalone OSD centered overlay for volume/brightness/mic-mute/theme changed/wallpaper changed (may ditched in favor of swaync manual Notifications) |
+| [[awww]]                                        | Wallpaper Manager                                                                                                                                    |
+| [[Matugen]] & waypaper                          | Dynamic Theme Engine + wallpaper UI                                                                                                                  |
+| [[Hyprlock & Hypridle]]                         | Lock Screen & Idle Management                                                                                                                        |
+| [[Cliphist]], wl-clipboard                      | Clipboard (Wofi-integrated)                                                                                                                          |
+| Thunar, Dolphin, Nemo                           | File Manager                                                                                                                                         |
+| [[Flameshot]]                                   | Screenshot                                                                                                                                           |
+| [[OBS Studio]], wl-screenrec                    | Screen Recording                                                                                                                                     |
+| PipeWire, WirePlumber, pavucontrol              | Audio                                                                                                                                                |
+| NetworkManager, nmcli                           | Network                                                                                                                                              |
+| BlueZ, bluetoothctl                             | Bluetooth                                                                                                                                            |
+| [[hyprpolkitagent]]                             | Authentication                                                                                                                                       |
+| SDDM, greetd                                    | Login / Greeter                                                                                                                                      |
+| xdg-desktop-portal, xdg-desktop-portal-hyprland | Wayland Portal                                                                                                                                       |
+| Custom created icons (may switch to Papirus)    | Icon Theme                                                                                                                                           |
+| Neovim                                          | Text Editor                                                                                                                                          |
+| VS Code                                         | Code Editor (theme target)                                                                                                                           |
+| Opencode                                        | Coding Tool (theme target)                                                                                                                           |
+| Brave                                           | Coding Tool (theme target)                                                                                                                           |
+| Firefox                                         | Coding Tool (theme target)                                                                                                                           |
+| Obsidian                                        | Coding Tool (theme target)                                                                                                                           |
 
 ## Machine
 
