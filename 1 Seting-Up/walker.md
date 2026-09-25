@@ -164,6 +164,8 @@ hl.bind("ALT + T", hl.dsp.exec_cmd("walker -m todo"))
 hl.bind("ALT + U", hl.dsp.exec_cmd("walker -m unicode"))
 -- Snippets
 hl.bind("ALT + N", hl.dsp.exec_cmd("walker -m snippets"))
+-- All
+hl.bind("ALT + A", hl.dsp.exec_cmd("walker -m providerlist"))
 ```
 
 ```text
