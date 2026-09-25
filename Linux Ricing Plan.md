@@ -2,7 +2,7 @@
 # Ongoing
 
 - [ ] Waybar and system-control basics
-- [ ] Matugen
+- [x] Matugen
 - [ ] GTK/Qt - icon - cursor - Fonts
 - [ ] Fonts manager - File manager - Waypaper
 - [x] OBS
@@ -32,7 +32,7 @@
 | [[Matugen]] & waypaper                          | Dynamic Theme Engine + wallpaper UI                                                                                                                  |
 | [[Hyprlock & Hypridle]]                         | Lock Screen & Idle Management                                                                                                                        |
 | [[Cliphist]], wl-clipboard                      | Clipboard (Wofi-integrated)                                                                                                                          |
-| Thunar, Dolphin, Nemo                           | File Manager                                                                                                                                         |
+| [[Nautilus]]                                    | File Manager                                                                                                                                         |
 | [[Flameshot]]                                   | Screenshot                                                                                                                                           |
 | [[OBS Studio]], wl-screenrec                    | Screen Recording                                                                                                                                     |
 | PipeWire, WirePlumber, pavucontrol              | Audio                                                                                                                                                |
